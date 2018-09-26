@@ -1,5 +1,7 @@
 # Example of `componentWillReceiveProps` in React
 
+![Example Application](screenshot.png)
+
 1.  The `Counter` component renders a `CounterDisplay` component
 2.  On first (initial) render, `CounterDisplay` is created and it's elements are added to the DOM (`componentDidMount` will be called)
 3.  When you increase the counter in `Counter`, `Counter` is-rendered and the already mounted `CounterDisplay` receives a new value - `componentWillReceiveProps` is called

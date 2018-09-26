@@ -1,0 +1,46 @@
+{
+  "name": "react-typescript-starter",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "email": "nils@nilshartmann.net",
+    "name": "Nils Hartmann",
+    "url": "https://nilshartmann.net"
+  },
+  "description": "React TypeScript Starter",
+  "keywords": [
+    "react",
+    "javascript",
+    "typescript",
+    "starter-kit"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nilshartmann/react-typescript-starter.git"
+  },
+  "scripts": {
+    "start": "yarn devserver",
+    "clean": "rimraf -rf public/dist/",
+    "dist": "webpack",
+    "webpack": "webpack --watch",
+    "devserver": "webpack-dev-server --content-base public/",
+    "prettier": "prettier --write \"{src}/**/*.{js,jsx,ts,tsx}\""
+  },
+  "devDependencies": {
+    "@types/webpack-env": "1.13.2",
+    "awesome-typescript-loader": "3.2.3",
+    "prettier": "^1.10.2",
+    "rimraf": "2.6.2",
+    "source-map-loader": "0.2.3",
+    "tslint": "5.8.0",
+    "typescript": "3",
+    "webpack": "3.8.1",
+    "webpack-dev-server": "2.9.3"
+  },
+  "dependencies": {
+    "@types/react": "^16.3.10",
+    "@types/react-dom": "^16.0.5",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2"
+  }
+}

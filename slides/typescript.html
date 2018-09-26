@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>React Workshop</title>
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+
+
+  <!-- Code syntax highlighting -->
+  <link rel="stylesheet" href="reveal.js/lib/css/github.css">
+  <style>
+    /*pre code {*/
+
+    /*display: block;*/
+
+    /*padding: 0.5em;*/
+
+    /*background: #FFFFFF !important;*/
+
+    /*color: #000000 !important;*/
+
+    /*}*/
+
+    .right-img {
+      margin-left: 10px !important;
+      float: right;
+      height: 500px;
+    }
+
+    .todo:before {
+      content: 'TODO: ';
+    }
+
+    .todo {
+      color: red !important;
+    }
+
+    code span.line-number {
+      color: lightcoral;
+    }
+
+    .reveal pre {
+      max-width: 980px;
+    }
+
+    .reveal pre code {
+      max-height: 1000px !important;
+    }
+
+    .reveal section img {
+      border: 0;
+      box-shadow: 0 0 0 0
+    }
+
+    /*rgb(196, 215, 240)*/
+
+    html.exkurs body {
+      background: rgb(252, 220, 185) url("ai/es6-icon.png") no-repeat right bottom;
+    }
+  </style>
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  </script>
+
+  <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+
+<body>
+
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+      <section id="t5">
+        <h2>React mit TypeScript entwickeln</h2>
+        <h3>Themen</h3>
+        <ul>
+          <li>
+            <a href="#/t5a">TypeScript Grundlagen</a>
+          </li>
+          <li>
+            <a href="#/t5b">React-Anwendungen mit TypeScript entwickeln</a>
+          </li>
+          <li>
+            <a href="#/rr4">React Router v4 mit TypeScript</a>
+          </li>
+        </ul>
+      </section>
+
+      <section id="t5a">
+        <h2>Hintergrund: TypeScript</h2>
+        <p>
+          <em>TypeScript is a superset of JavaScript that compiles to plain JavaScript </em>(
+          <a href="http://www.typescriptlang.org/" target="_blank">http://www.typescriptlang.org/</a>)</p>
+        <ul>
+          <li>Erweitert JavaScript um ein Typen System</li>
+          <li>Jeder gültige JavaScript Code ist auch gültiger TypeScript Code</li>
+          <li>Mittels des TypeScript Compilers wird aus TS Code JavaScript Code</li>
+          <li>Entwickelt von Microsoft</li>
+          <li>Unterstützung in vielen IDEs (z.B. Anzeige von Fehlern, Refactoring, ...) </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Wichtige Unterschiede zu Java/C#</h3>
+        <ul>
+          <li>Typ-Informationen sind nach dem compilieren weg (keine Reflection API etc)
+            <ul>
+              <li>Das gilt auch für Sichtbarkeiten und readonly Felder</li>
+            </ul>
+          </li>
+          <li>Es wird auch JavaScript-Code erzeugt, selbst wenn es einen Compile-Fehler gibt</li>
+          <li>Im Gegensatz zu Java/C# sind bei TypeScript zwei Typen kompatibel, sofern sie
+            <b>dieselbe Struktur</b> haben</em>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>TypeScript Grundlagen</h3>
+        <p>Typ-Angaben werden hinter einen Bezeichner geschrieben</p>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+// Variablen können Typ-Informationen bekommen
+let foo: string;
+foo = 'yo';
+// Error: number: This type is incompatible with string
+foo = 10;
+               </code></pre>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+// Funktionen
+function sayIt(what: string): string {
+  return `Saying: ${what}`;
+}
+
+sayIt('Klaus'); // ok
+sayIt(10); // error
+</code></pre>
+
+
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+// Arrow Funktionen
+const sayIt = (what: string): string => `Saying: ${what}`;
+
+sayIt('Moin');
+sayIt(123); // Error: Argument of type '123' is not assignable
+            // to parameter of type 'string'.
+</code></pre>
+      </section>
+
+      <section>
+        <h2>Eingebaute Typen</h2>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+// string
+let city: string = 'Hamburg';
+
+// boolean
+let isDone: boolean = false;
+
+// number
+let theAnswer: number = 42;
+
+// array (note the [])
+let cities: string[] = ['Hamburg', 'Barcelona'];
+// alternative:
+let languages: Array&lt;string> = ['JavaScript', 'TypeScript'];
+
+// any
+let theUnknown: any = 'Who cares';
+theUnknown = 666; // ok
+theUnknown = true; // ok
+let a: number = theUnknown; // ok
+
+// void
+function log(s: string): void { /* ... */ }
+            </code></pre>
+
+      </section>
+      <section>
+        <h2>Typen können abgeleitet (inferred) werden</h2>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+let city = 'Hamburg'; // city ist ein String
+
+city = 42;
+// Fehler: [ts] Type '42' is not assignable to type 'string'.
+</code></pre>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+// Explizite Angabe eines Types (parameter)
+// und abgeleiteter Typ (Return Type der Funktion)
+
+function sayIt(what: string) {
+  return `Saying: ${what}`;
+}
+
+const said: string = sayIt('Hello TypeScript'); // ok
+const saidItWrong: number = sayIt('Hello TypeScript'); // error!
+
+
+</code></pre>
+      </section>
+      <section>
+        <h2>Strict Mode</h2>
+        <ul>
+          <li>
+            <b>strict</b>: seit TypeScript 2.3</li>
+          <li>Shortcut u.a. für:
+            <ul>
+              <li>
+                <b>noImplicitAny</b>:
+                <code>any</code> muss explizit hingeschrieben werden</li>
+              <li>
+                <b>strictNullChecks</b>: Null muss explizit erlaubt werden (z.B. bei Rückgabewerten)</li>
+            </ul>
+          </li>
+          <li>Empfehlung: für neue Projekte einschalten, sonst Schrittweise</li>
+        </ul>
+        <p>
+          <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html" target="_blank">https://www.typescriptlang.org/docs/handbook/compiler-options.html</a>
+        </p>
+      </section>
+      <section>
+        <h2>Type Check ausschalten</h2>
+        <p>Mit
+          <code>@ts-ignore</code> (als Kommentar) kann wird die Überprüfung der nächsten Zeile ausgeschaltet:</p>
+        <pre><code class="typescript line-numbers" contenteditable data-trim>
+let city:string = "Hamburg";
+
+city = 20259; // error: [ts] Type '20259' is not assignable to type 'string'.
+
+// @ts-ignore
+city = 20259; // ok                
+</code></pre>
+        <p class="fragment">Nützlich in corner cases, die nur schwer mit TypeScript abbildbar sind oder bei Migration</p>
+      </section>
+      <section>
+        <h2>null und undefined</h2>
+        <div class="fragment">
+          <p>
+            <code>null</code> muss explizit zugelassen werden
+            <em>(strictNullChecks</em>):</p>
+          <pre><code class="typescript line-numbers" contenteditable data-trim>
+let city:string = null; //Type 'null' is not assignable to type 'string'.
+
+let optionalCity:string|null = null; // OK
+            </code></pre>
+        </div>
+        <div class="fragment">
+          <p>Optionale Parameter können mit ? gekennzeichnet werden (erlauben dann auch
+            <code>undefined</code>)</p>
+          <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+function greet(name: string, greeting?: string) {
+  console.log(`${greeting || 'Hello'}, {name}`);
+}
+
+greet('Susi', 'Moin')// Moin, Susi
+
+// 2. Parameter ist optional:
+greet('Klaus'); // Hello, Klaus
+
+greet('Peter', null); // Argument of type 'null' is not assignable
+                      // to parameter of type 'string | undefined'.
+            </code></pre>
+        </div>
+      </section>
+
+
+      <section>
+        <h2>Klassen</h2>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+class Sayer {
+  what: string; // Typ-Angabe für Felder ist erforderlich
+
+  constructor(what: string) { // Typ-Angabe für Parameter ist erforderlich
+    this.what = what;
+  }
+
+  // Angabe des Return-Types optional
+  sayIt(): string {
+    return `Saying: ${this.what}`;
+  }
+}
+
+</code></pre>
+      </section>
+
+      <section>
+        <h2>Klassen (Sichtbarkeiten)</h2>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+class Sayer {
+  // Erlaubte Sichtbarkeiten: private | protected | public
+  private what: string; 
+
+  constructor(what: string) { 
+    this.what = what;
+  }
+
+  sayIt(): string {
+    return `Saying: ${this.what}`;
+  }
+}
+
+const sayer = new Sayer("Susi");
+sayer.what = ""; // ERROR: Property 'greeting' is private
+
+</code></pre>
+      </section>
+      <section>
+        <h2>Klassen (Parameter Properties)</h2>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+class Sayer {
+  // identisch zu vorherigem Beispiel
+  constructor(private what: string) {
+  }
+
+  sayIt(): string {
+    return `Saying: ${this.what}`;
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Klassen (readonly Felder)</h2>
+        <pre class="fragment"><code class="typescript line-numbers" contenteditable data-trim>
+class Sayer {
+
+  readonly what: string; 
+
+  // Alternativ:
+  constructor(readonly public what: string) {
+  }
+
+  setWhat(newWhat: string) {
+    this.what = newWhat; // ERR Cannot assign to 'what' 
+                         // because it is a read-only property.
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h2>Eigene Typen</h2>
+        <p>Mit
+          <code>interface</code> können eigene Typen defniert werden:</p>
+
+        <pre><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+// Komplexer Typ
+interface Person {
+	name: string; // Pflicht
+	livesIn?: string; // Optional
+}
+
+const susi: Person = { // OK
+	name: 'Klaus',
+	livesIn: 'Hamburg'
+};
+const klaus: Person = { // OK (livesIn ist optional)
+	name: 'Klaus'
+}
+
+const helmut: Person = {} // Error: Property 'name' is missing
+
+const lukas: Person = {
+	name: 'Lukas',
+	profession: 'Lokführer'
+} // Error: 'profession' does not exist in type 'Person'.
+               </code></pre>
+
+      </section>
+
+      <section>
+        <h2>Typ Kompatibilität</h2>
+        <em>Im Gegensatz zu Java/C# ("nominal typing") sind bei TypeScript zwei Typen kompatibel, sofern sie
+          <b>dieselbe Struktur</b> haben ("structural typing")</em>
+        <pre><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+interface Book {
+	title: string
+}
+
+interface Movie {
+	title: string
+}
+
+const book:Book = { title: "Das Kapital" };
+const movie:Movie = book; // OK, obwohl Book !== Movie
+               </code></pre>
+      </section>
+      <section>
+        <h2>Generics</h2>
+        <p>Generische Typen verwenden</p>
+        <pre><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+interface Person { name: string };
+interface Movie { title: string };
+
+let persons:Array&lt;Person&gt; = [];
+let movies:Array&lt;Movie&gt; = [];
+
+persons.push({name: 'Klaus'});
+movies.push({title: 'Batman'});
+
+persons.push({title: 'Casablanca'}) // error ('title' not in Person)
+
+persons = movies; // error
+
+      </code></pre>
+      </section>
+      <section>
+        <h2>Arbeiten mit externen Bibliotheken</h2>
+        <p>Typings installieren und verwenden</p>
+        <ul>
+          <li>Typings sind optional, können aber über zusätzliches Deklarations-File hinzugefügt werden
+            <li>Typings für Kern-Bibliotheken kommen mit TypeScript Compiler
+              <li>Manche Bibliotheken werden bereits mit TypeScript Deklarations-Files ausgeliefert (z.B. Redux)
+                <li>Typen können über
+                  <a href="https://blogs.msdn.microsoft.com/typescript/2016/06/15/the-future-of-declaration-files/" target="_blank">npm</a> installiert werden und sind dann ohne weiter Schritte nutzbar (z.B.
+                  <em>npm install @types/react --save</em>)
+        </ul>
+      </section>
+
+      <section>
+        <h2>Arbeiten mit externen Bibliotheken</h2>
+        <p>Typings selber beschreiben</p>
+        <ul>
+          <li>Workaround, wenn keine Typings vorhanden sind
+
+            <pre><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+declare module 'jquery';
+
+declare module 'module-with-default-export' {
+  let str: string;
+  export default str;
+}
+                          </code></pre>
+          </li>
+        </ul>
+      </section>
+
+      <section id="t5b">
+        <h2>React Anwendungen mit TypeScript</h2>
+        <em>State und Properties von Komponenten werden mit Typen beschrieben</em>
+      </section>
+      <section>
+        <h2>Voraussetzungen</h2>
+        <ul>
+          <li class="fragment">React Type Deklarationen installieren:
+            <pre><code data-trim contenteditable class="line-numbers bash" data-leftpad>
+npm install --save @types/react @types/react-dom
+        </code></pre>
+          </li>
+          <li class="fragment">(Externe) Module, die kein Default-Export haben, müssen mit
+            <code>import *</code> importiert werden:
+            <pre><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+// JavaScript/Babel:
+import React from 'react';
+
+// TypeScript
+import * as React from 'react';
+        </code></pre>
+          </li>
+          <li class="fragment">Dateien, die JSX-Code enthalten, müssen mit
+            <code>.tsx</code> enden</li>
+          <li class="fragment">Compiliert wird mit TypeScript (statt Babel). Integration in Webpack mit
+            <a href="https://github.com/s-panferov/awesome-typescript-loader" target="_blank">
+              <code>awesome-typescript-loader</code>
+            </a>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>Getypte React Komponenten</h2>
+        <p>
+          <code>React.Component</code> ist eine generische Klasse, die einen Typ für Properties und State erwartet</p>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+interface Greeting = {name: string; greeting: string};
+
+interface GreetingDetailProps {
+    greeting?: Greeting;
+    onSave: (newGreeting: NewGreeting) => void;
+}
+
+interface GreetingDetailState {
+    name: string;
+    greeting: string;
+}
+            </code></pre>
+
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+
+class GreetingDetail
+  extends React.Component&lt;GreetingDetailProps, GreetingDetailState> {
+  // ...
+}
+            </code></pre>
+      </section>
+      <section>
+        <h3>Typsicherheit in React Komponenten</h3>
+        <p>Properties und State sind typsicher</p>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+constructor(props: Props) {
+    super(props);
+
+    this.state = { name: '', greeting: ''} // OK
+
+    // ERROR: Object literal may only specify known properties,
+    // and 'aha' does not exist in type 'Readonly&lt;State>'
+    this.state = {name: '', greeting: '', aha: 10};
+
+    // ERROR: Cannot assign to 'greeting' because
+    // it is a constant or a read-only property.
+    this.state.greeting = 'no way';
+}
+
+render() {
+  // ERROR: Property 'nothere' does not exist on type...
+  return &lt;div>{this.props.nothere}&lt;/iv>;
+}
+               </code></pre>
+      </section>
+      <section>
+        <h2>React Events in TypeScript</h2>
+        <span class="fragment">
+          <pre><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+class GreetingDetail extends React.Component&lt;Props, State> {
+  // . . .
+  updateModel(event: React.SyntheticEvent&lt;HTMLInputElement>) {
+    // 'currentTarget' anstatt 'target' verwenden:
+    const { name, value } = event.currentTarget;
+    // . . .
+
+    // Compile error! 
+    this.setState({[name]}: value);
+
+    // typechecking ausschalten
+    this.setState({[name as any]: value});
+
+    // @ts-ignore (alternative, seit TS 2.6)
+    this.setState({[name]}: value);
+  }
+}
+
+        </code></pre>
+          <p>
+            <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/issues/11508#issuecomment-256045682" target="_blank">
+              <code>target</code> vs
+              <code>currentTarget</code>
+            </a>
+          </p>
+        </span>
+
+      </section>
+      <section>
+        <h2>Functional Components</h2>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+type GreetingMasterProps = {
+    greetings: Greeting[]
+    onAdd: () => void
+};
+        </code></pre>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+const GreetingMaster = (props: GreetingMasterProps) => {
+    const {greetings, onAdd} = props;
+    // . . .
+}
+
+        </code></pre>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+// or
+const GreetingMaster = ({greetings, onAdd}: GreetingMasterProps) => {
+    // . . .
+}
+
+        </code></pre>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers typescript" data-leftpad>
+// or
+const GreetingMaster: React.SFC&lt;GreetingMasterProps> = props => {
+    const {greetings, onAdd} = props;
+    // . . .
+}
+        </code></pre>
+      </section>
+
+      <section id="rr4">
+        <h2>React Router v4</h2>
+        <h3>Mit TypeScript</h3>
+      </section>
+
+      <section>
+        <h3>RouteComponentProps</h3>
+        <p>Der Router übergibt Properties an eine Route-Komponente</p>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers" data-leftpad>
+// GreetingController erhält history etc als Property          
+&lt;Route component={GreetingController} />
+                                                    </code></pre>
+        <p class="fragment">Die Route-Properties sind im Interface
+          <code>RouteComponentProps</code> definiert</p>
+        <p class="fragment">Die Komponente kann für ihre Properties das Interface erweitern:</p>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers" data-leftpad>
+import { RouteComponentProps } from "react-router";
+interface GreetingControllerProps extends RouteComponentProps&lt;void&gt { 
+  // ggf. eigene Properties des GreetingControllers
+}
+class GreetingController extends React.Component&lt;GreetingControllerProps> {
+  render() {
+    const history = this.props.history; // ok, kein Compile-Fehler
+  }
+}
+</code></pre>
+      </section>
+      <section>
+        <h3>RouteComponentProps #2</h3>
+        <p>Der Router übergibt die Parameter aus der URL an die Route-Komponente</p>
+        <pre class="fragment"><code data-trim contenteditable class="line-numbers" data-leftpad>
+  // GreetingController erhält "greetingId" als Property
+  &lt;Route path="/greeting/:greetingId" component={GreetingController} />
+                                                      </code></pre>
+        <p class="fragment">RouteComponentProps ist mit den erwarteten Parametern aus der URL generifiziert
+          <pre class="fragment"><code data-trim contenteditable class="line-numbers" data-leftpad>
+import { RouteComponentProps } from "react-router";
+
+// Die im Path definierten Parameter
+interface GreetingControllerParams { greetingId: string };
+
+// Als Type-Argument werden die Parameter angegeben
+interface GreetingControllerProps extends 
+  RouteComponentProps&lt;GreetingControllerParams&gt {   }
+
+class GreetingController extends React.Component&lt;GreetingControllerProps> {
+  render() {
+    const params = this.props.match;
+
+    const greetingId = params.greetingId; // ok, kein Compile-Fehler
+    const userId = params.userId; // Fehler: userId nicht bekannt
+  }
+}
+  </code></pre>
+      </section>
+      <section>
+        <h2>Fragen?</h2>
+        <p>
+          <a href="mailto:nils@nilshartmann.net">E-Mail: nils@nilshartmann.net</a>
+        </p>
+        <p>
+          <a href="https://twitter.com/nilshartmann" target="_blank">Twitter: @nilshartmann</a>
+        </p>
+      </section>
+    </div>
+
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+  <script src="lib/jquery-2.2.4.js"></script>
+
+  <script>
+    Reveal.addEventListener('ready', function (event) {
+      if (window.location.hostname.indexOf('localhost') !== -1) {
+        // only applies to presentation version
+        Reveal.configure({ controls: false });
+      } else {
+        // only applies to public version
+        //            $('.fragment').removeClass('fragment');
+      }
+      // applies to all versions
+      $('code').addClass('line-numbers');
+      //        $('.fragment').removeClass('fragment');
+    });
+  </script>
+
+
+  <script>
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      width: '100%',
+      height: '100%',
+
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+      // Optional reveal.js plugins
+      dependencies: [
+        {
+          src: 'reveal.js/lib/js/classList.js', condition: function () {
+            return !document.body.classList;
+          }
+        },
+        {
+          src: 'reveal.js/plugin/markdown/marked.js', condition: function () {
+            return !!document.querySelector('[data-markdown]');
+          }
+        },
+        {
+          src: 'reveal.js/plugin/markdown/markdown.js', condition: function () {
+            return !!document.querySelector('[data-markdown]');
+          }
+        },
+        {
+          src: 'reveal.js/plugin/highlight/highlight.js', async: true, condition: function () {
+            return !!document.querySelector('pre code');
+          }, callback: function () {
+            hljs.initHighlightingOnLoad();
+          }
+        },
+        { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+        { src: 'reveal.js/plugin/notes/notes.js', async: true },
+        { src: 'lib/js/line-numbers.js' }
+      ]
+    });
+
+  </script>
+
+</body>
+
+</html>
